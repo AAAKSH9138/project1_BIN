@@ -1,4 +1,3 @@
-  
 #include <Servo.h>
 #define moisSensorPin A0// humidity sensor attatched to analog pin 0 
 float moissensorvalue = 0;
