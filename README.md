@@ -1,2 +1,2 @@
-# project1_BIN
-smart dustbin...
+# Iot Based waste segregator
+smart dustbin
