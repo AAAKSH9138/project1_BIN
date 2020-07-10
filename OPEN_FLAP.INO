@@ -8,24 +8,28 @@ long duration;
 void setup() 
 {
 servo1.attach(7); 
- pinMode(trigPin, OUTPUT);
- pinMode(echoPin, INPUT);// put your setup code here, to run once:
+pinMode(trigPin, OUTPUT);
+pinMode(echoPin, INPUT);// put your setup code here, to run once:
 }
- 
-void loop() {
-  ultra();
-  servo1.write(0);
-  if(distance <= 10){
+
+void loop() 
+{
+  Measuredistance();
+  if(distance <= 10)
+  {
   servo1.write(90);
+  delay(50000);
+  servo1.write(0);
   }
+ delay(30000);
 }
- 
-void ultra(){
+void Measuredistance()
+{
   digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
+  delay(2000);
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
+  delay(1000);
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
-  distance = duration*0.034/2;
-  }
+  distance = duration*(0.034/2);
+ }
