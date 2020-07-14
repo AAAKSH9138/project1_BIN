@@ -1,51 +1,68 @@
 #include <SoftwareSerial.h>
+#include <TinyGPS.h>
 #define trigger  3
 #define echo     4
 int time_;
 float distance, dist_limit = 20.00;//cms
 int buzz = 13;
+int state = 0;
+const int pin = 9;
+float gpslat, gpslon;
+
+TinyGPS gps;
+SoftwareSerial sgps(4, 5);
+SoftwareSerial sgsm(2, 3);
+
 void setup()
 {
-
-Serial.begin(9600); // Setting the baud rate of GSM Module
-
-Serial.begin(9600); // Setting the baud rate of Serial Monitor (Arduino)
-
-//RecieveMessage();
-
-delay(100);
-pinMode(buzz, OUTPUT);
-pinMode(trigger, OUTPUT);
-pinMode(echo, INPUT);
-digitalWrite(buzz, LOW);     //set the buzzer in off mode (initial condition)
+  sgsm.begin(9600);
+  sgps.begin(9600);
+  pinMode(buzz, OUTPUT);
+  pinMode(trigger, OUTPUT);
+  pinMode(echo, INPUT);
+  digitalWrite(buzz, LOW); 
 }
 void loop()
-{ 
- int c=ultrasonic_sensor();
- if (c==1)
+{
+  int c=ultrasonic_sensor();
+  if (c==1)
   {
     digitalWrite(buzz,HIGH);
- if (Serial.available()>0)
+  if (Serial.available()>0)
     SendMessage();
   }
-else
-{
-digitalWrite(buzz,LOW);
+  else
+  {
+  digitalWrite(buzz,LOW);
+  }
 }
-}
-void SendMessage()
-{
-Serial.println("AT+CMGF=1"); //Sets the GSM Module in Text Mode
-delay(1000); 
-Serial.println("AT+CMGS=\"+9264969353\"\r"); 
-delay(1000);
-Serial.println("Your dustbin is about to be full.Dump it now.");
-
-delay(100);
-Serial.println((char)26);// ASCII code of CTRL+Z
-delay(1000);
-}
-int ultrasonic_sensor()
+ void SendMessage()
+  {
+    while (sgps.available())
+      {
+      int c = sgps.read();
+      if (gps.encode(c))
+        {
+          gps.f_get_position(&gpslat, &gpslon);
+        }
+      }
+      
+      sgsm.print("\r");
+      delay(1000);
+      sgsm.print("AT+CMGF=1\r");
+      delay(1000);
+      sgsm.print("AT+CMGS=\"+ZZXXXXXXXXXX\"\r");
+      delay(1000);
+      //The text of the message to be sent.
+      sgsm.print("Latitude :");
+      sgsm.println(gpslat, 6);
+      sgsm.print("Longitude:");
+      sgsm.println(gpslon, 6);
+      delay(1000);
+      sgsm.write(0x1A);
+      delay(1000);
+   }
+   int ultrasonic_sensor()
 {
   digitalWrite(trigger, HIGH);
   delay(1000);
