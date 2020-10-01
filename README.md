@@ -1,2 +1,2 @@
 # Iot Based waste segregator
-smart dustbin
+this is an iot based smart waste segregator which segregates the waste into three categories i.e metallic, dry and wet waste. This dustbin is providing a solution for tackling the problem of segregating biodegradable, non-biodegradable and metallic waste, which earlier used to be done manually. This dustbin will be very useful for places like railway stations, parks, restaurants, etc.
